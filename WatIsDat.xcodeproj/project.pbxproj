@@ -16,6 +16,7 @@
 		83EAF1CB2A1E0C880077D840 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1CA2A1E0C880077D840 /* MobileNet.mlmodel */; };
 		83EAF1CD2A1E25000077D840 /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1CC2A1E25000077D840 /* MobileNetV2.mlmodel */; };
 		83EAF1CF2A1E26A20077D840 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1CE2A1E26A20077D840 /* Resnet50.mlmodel */; };
+		83EAF1D12A1E2B880077D840 /* MNISTClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1D02A1E2B880077D840 /* MNISTClassifier.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		83EAF1CA2A1E0C880077D840 /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNet.mlmodel; sourceTree = "<group>"; };
 		83EAF1CC2A1E25000077D840 /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
 		83EAF1CE2A1E26A20077D840 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
+		83EAF1D02A1E2B880077D840 /* MNISTClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MNISTClassifier.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				83EAF1CA2A1E0C880077D840 /* MobileNet.mlmodel */,
 				83EAF1CC2A1E25000077D840 /* MobileNetV2.mlmodel */,
 				83EAF1CE2A1E26A20077D840 /* Resnet50.mlmodel */,
+				83EAF1D02A1E2B880077D840 /* MNISTClassifier.mlmodel */,
 			);
 			path = WatIsDat;
 			sourceTree = "<group>";
@@ -151,6 +154,7 @@
 				83EAF1B82A1D33010077D840 /* AppDelegate.swift in Sources */,
 				83EAF1CD2A1E25000077D840 /* MobileNetV2.mlmodel in Sources */,
 				83EAF1CB2A1E0C880077D840 /* MobileNet.mlmodel in Sources */,
+				83EAF1D12A1E2B880077D840 /* MNISTClassifier.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

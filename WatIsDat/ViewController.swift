@@ -48,7 +48,8 @@ class ViewController: UIViewController {
         view.addGestureRecognizer(tapGesture)
         
         // MARK: - Vision Model Config
-        guard let selectedModel = try? VNCoreMLModel(for: Resnet50().model) else {
+        let defaultMLConfig = MLModelConfiguration();
+        guard let selectedModel = try? VNCoreMLModel(for: Resnet50(configuration: defaultMLConfig).model) else {
             fatalError("Error on loading ML Model")
         }
         
@@ -190,7 +191,10 @@ class ViewController: UIViewController {
         }
         
         // Get the clasification
-        let classifications = observations[0...1] // Get the top 2 results
+        let classifications = observations[0...1] // Get top 2 results
+//            .filter({
+//                $0.confidence >= 0.5
+//            })
             .flatMap({ $0 as? VNClassificationObservation })
             .map({ "\($0.identifier) \(String(format: "- %.2f", $0.confidence))" }) // Confidence
             .joined(separator: "\n")
