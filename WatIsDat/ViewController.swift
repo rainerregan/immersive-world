@@ -20,6 +20,10 @@ class ViewController: UIViewController {
     let bubbleDepth : Float = 0.01 // the 'depth' of 3D text
     var latestPrediction : String = "THIS IS SPARTA" // a variable containing the latest CoreML prediction
     
+    // CoreML
+    var visionRequests = [VNRequest]()
+    let dispatchQueueML = DispatchQueue(label: "com.hw.dispatchqueueml") // A Serial Queue
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,13 +40,26 @@ class ViewController: UIViewController {
         // Set the scene to the view
         sceneView.scene = scene
         
-        /// TAP GESTURE RECOGNIZER
+        // MARK: - TAP GESTURE RECOGNIZER
         let tapGesture = UITapGestureRecognizer(
             target: self,
             action: #selector(self.handleTap(gestureRecognizer:))
         )
-        
         view.addGestureRecognizer(tapGesture)
+        
+        // MARK: - Vision Model Config
+        guard let selectedModel = try? VNCoreMLModel(for: MobileNet().model) else {
+            fatalError("Error on loading ML Model")
+        }
+        
+        // Setup VisionCoreML request
+        let classificationRequest = VNCoreMLRequest(model: selectedModel, completionHandler: classificationCompleteHandler)
+        classificationRequest.imageCropAndScaleOption = VNImageCropAndScaleOption.centerCrop // Crop the image
+        visionRequests = [classificationRequest]
+        
+        // Loop for updating CoreML
+        loopCoreMLUpdate()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,11 +81,6 @@ class ViewController: UIViewController {
     
     // MARK: - Interaction Configuration
     @objc func handleTap(gestureRecognizer : UITapGestureRecognizer) {
-        // Get screen center point
-//        let screenCenterPoint : CGPoint = CGPoint(
-//            x: self.sceneView.bounds.midX,
-//            y: self.sceneView.bounds.midY
-//        )
         
         // Create a raycast query using the current frame
         if let raycastQuery: ARRaycastQuery = sceneView.raycastQuery(
@@ -132,11 +144,80 @@ class ViewController: UIViewController {
         return bubbleNodeParent
     }
 
+    // MARK: - CoreML Vision Handling
     
+    func loopCoreMLUpdate() {
+        dispatchQueueML.async {
+            // Update CoreML
+            self.updateCoreML()
+            
+            // Loop this function
+            self.loopCoreMLUpdate()
+        }
+    }
+    
+    func updateCoreML() {
+        // Get camera image
+        let pixbuff : CVPixelBuffer? = (sceneView.session.currentFrame?.capturedImage)
+        if pixbuff == nil {return}
+        let ciImage = CIImage(cvImageBuffer: pixbuff!)
+        
+        // Prepare CoreML Vision Request
+        let imageRequestHandler = VNImageRequestHandler(
+            ciImage: ciImage,
+            options: [:]
+        )
+        
+        // Run Image Request
+        do {
+            try imageRequestHandler.perform(self.visionRequests)
+        } catch {
+            print(error)
+        }
+    }
+    
+    /// Classification Complete Handler
+    /// Untuk menghandle classification model dari CoreML
+    func classificationCompleteHandler(request: VNRequest, error: Error?) {
+        // Catch Errors
+        if error != nil {
+            print("Error: " + (error?.localizedDescription)!)
+            return
+        }
+        guard let observations = request.results else {
+            print("No results")
+            return
+        }
+        
+        // Get the clasification
+        let classifications = observations[0...1] // Get the top 2 results
+            .flatMap({ $0 as? VNClassificationObservation })
+            .map({ "\($0.identifier) \(String(format: "- %.2f", $0.confidence))" }) // Confidence
+            .joined(separator: "\n")
+        
+        DispatchQueue.main.async {
+            // Print the clasification
+            print(classifications)
+            print("---------")
+            
+            // Display Debug Text on screen
+            var debugText:String = ""
+            debugText += classifications
+            self.debugText.text = debugText
+            
+            // Store the latest prediction
+            var objectName:String = "NOPE"
+            objectName = classifications.components(separatedBy: "-")[0]
+            objectName = objectName.components(separatedBy: ",")[0]
+            self.latestPrediction = objectName
+            
+        }
+    }
 }
 
+// MARK: - ARSCNViewDelegate
+
 class ViewControllerDelegate: NSObject, ARSCNViewDelegate {
-    // MARK: - ARSCNViewDelegate
     
 /*
     // Override to create and configure nodes for anchors added to the view's session.
