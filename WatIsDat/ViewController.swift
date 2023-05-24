@@ -48,7 +48,7 @@ class ViewController: UIViewController {
         view.addGestureRecognizer(tapGesture)
         
         // MARK: - Vision Model Config
-        guard let selectedModel = try? VNCoreMLModel(for: MobileNetV2().model) else {
+        guard let selectedModel = try? VNCoreMLModel(for: Resnet50().model) else {
             fatalError("Error on loading ML Model")
         }
         
