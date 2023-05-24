@@ -13,13 +13,6 @@
 		83EAF1BF2A1D33010077D840 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF1BD2A1D33010077D840 /* Main.storyboard */; };
 		83EAF1C12A1D33020077D840 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF1C02A1D33020077D840 /* Assets.xcassets */; };
 		83EAF1C42A1D33020077D840 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF1C22A1D33020077D840 /* LaunchScreen.storyboard */; };
-		83EAF1CB2A1E0C880077D840 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1CA2A1E0C880077D840 /* MobileNet.mlmodel */; };
-		83EAF1CD2A1E25000077D840 /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1CC2A1E25000077D840 /* MobileNetV2.mlmodel */; };
-		83EAF1CF2A1E26A20077D840 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1CE2A1E26A20077D840 /* Resnet50.mlmodel */; };
-		83EAF1D12A1E2B880077D840 /* MNISTClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1D02A1E2B880077D840 /* MNISTClassifier.mlmodel */; };
-		83EAF1F22A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1F12A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel */; };
-		83EAF1F42A1E50420077D840 /* DrawnImageClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1F32A1E50420077D840 /* DrawnImageClassifier.mlmodel */; };
-		83EAF1F82A1E5C9B0077D840 /* HandDrawingModel 1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1F72A1E5C9B0077D840 /* HandDrawingModel 1.mlmodel */; };
 		83EAF1FA2A1E5D5C0077D840 /* HandDrawingModel_New.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1F92A1E5D5C0077D840 /* HandDrawingModel_New.mlmodel */; };
 		83EAF2002A1E5EB90077D840 /* eiffel.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF1FE2A1E5EB90077D840 /* eiffel.usdz */; };
 		83EAF2042A1E64FF0077D840 /* tree.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF2032A1E64FF0077D840 /* tree.usdz */; };
@@ -33,13 +26,6 @@
 		83EAF1BE2A1D33010077D840 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		83EAF1C02A1D33020077D840 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		83EAF1C32A1D33020077D840 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		83EAF1CA2A1E0C880077D840 /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNet.mlmodel; sourceTree = "<group>"; };
-		83EAF1CC2A1E25000077D840 /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
-		83EAF1CE2A1E26A20077D840 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
-		83EAF1D02A1E2B880077D840 /* MNISTClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MNISTClassifier.mlmodel; sourceTree = "<group>"; };
-		83EAF1F12A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = UpdatableDrawingClassifier.mlmodel; sourceTree = "<group>"; };
-		83EAF1F32A1E50420077D840 /* DrawnImageClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = DrawnImageClassifier.mlmodel; sourceTree = "<group>"; };
-		83EAF1F72A1E5C9B0077D840 /* HandDrawingModel 1.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = "HandDrawingModel 1.mlmodel"; sourceTree = "<group>"; };
 		83EAF1F92A1E5D5C0077D840 /* HandDrawingModel_New.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = HandDrawingModel_New.mlmodel; sourceTree = "<group>"; };
 		83EAF1FE2A1E5EB90077D840 /* eiffel.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = eiffel.usdz; sourceTree = "<group>"; };
 		83EAF2032A1E64FF0077D840 /* tree.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = tree.usdz; sourceTree = "<group>"; };
@@ -77,7 +63,6 @@
 			children = (
 				83EAF2032A1E64FF0077D840 /* tree.usdz */,
 				83EAF1FE2A1E5EB90077D840 /* eiffel.usdz */,
-				83EAF1FC2A1E5E910077D840 /* 3DModel */,
 				83EAF1FB2A1E5DAC0077D840 /* Models */,
 				83EAF1B72A1D33010077D840 /* AppDelegate.swift */,
 				83EAF1B92A1D33010077D840 /* art.scnassets */,
@@ -92,23 +77,9 @@
 		83EAF1FB2A1E5DAC0077D840 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				83EAF1CA2A1E0C880077D840 /* MobileNet.mlmodel */,
-				83EAF1CC2A1E25000077D840 /* MobileNetV2.mlmodel */,
-				83EAF1CE2A1E26A20077D840 /* Resnet50.mlmodel */,
-				83EAF1D02A1E2B880077D840 /* MNISTClassifier.mlmodel */,
-				83EAF1F12A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel */,
-				83EAF1F32A1E50420077D840 /* DrawnImageClassifier.mlmodel */,
-				83EAF1F72A1E5C9B0077D840 /* HandDrawingModel 1.mlmodel */,
 				83EAF1F92A1E5D5C0077D840 /* HandDrawingModel_New.mlmodel */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		83EAF1FC2A1E5E910077D840 /* 3DModel */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = 3DModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -185,15 +156,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83EAF1F42A1E50420077D840 /* DrawnImageClassifier.mlmodel in Sources */,
-				83EAF1CF2A1E26A20077D840 /* Resnet50.mlmodel in Sources */,
-				83EAF1F82A1E5C9B0077D840 /* HandDrawingModel 1.mlmodel in Sources */,
 				83EAF1BC2A1D33010077D840 /* ViewController.swift in Sources */,
 				83EAF1B82A1D33010077D840 /* AppDelegate.swift in Sources */,
-				83EAF1CD2A1E25000077D840 /* MobileNetV2.mlmodel in Sources */,
-				83EAF1CB2A1E0C880077D840 /* MobileNet.mlmodel in Sources */,
-				83EAF1D12A1E2B880077D840 /* MNISTClassifier.mlmodel in Sources */,
-				83EAF1F22A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel in Sources */,
 				83EAF1FA2A1E5D5C0077D840 /* HandDrawingModel_New.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
