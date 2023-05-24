@@ -56,7 +56,7 @@ class ViewController: UIViewController {
         
         /// It declares a constant variable defaultMLConfig which is an instance of MLModelConfiguration. MLModelConfiguration is a class that provides configuration options for an ML model. The code then loads a Core ML model called HandDrawingModel_New using the VNCoreMLModel class. The VNCoreMLModel class is used to load a Core ML model into a Vision request. The loaded model is assigned to the selectedModel constant variable. If there is an error loading the model, the code will print an error message and terminate the program.
         let defaultMLConfig = MLModelConfiguration();
-        guard let selectedModel = try? VNCoreMLModel(for: HandDrawingModel_New(configuration: defaultMLConfig).model) else {
+        guard let selectedModel = try? VNCoreMLModel(for: HandDrawingModel_v2(configuration: defaultMLConfig).model) else {
             fatalError("Error on loading ML Model")
         }
         
