@@ -9,6 +9,7 @@ import UIKit
 import SceneKit
 import ARKit
 import Vision
+import SceneKit.ModelIO
 
 class ViewController: UIViewController {
 
@@ -49,7 +50,7 @@ class ViewController: UIViewController {
         
         // MARK: - Vision Model Config
         let defaultMLConfig = MLModelConfiguration();
-        guard let selectedModel = try? VNCoreMLModel(for: Resnet50(configuration: defaultMLConfig).model) else {
+        guard let selectedModel = try? VNCoreMLModel(for: HandDrawingModel_New(configuration: defaultMLConfig).model) else {
             fatalError("Error on loading ML Model")
         }
         
@@ -99,13 +100,29 @@ class ViewController: UIViewController {
                 let worldCoord : SCNVector3 = SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
                 
                 // Create 3D Text
-                let node : SCNNode = createNewBubbleParentNode(latestPrediction)
+//                let model = loadSceneBasedOnPrediction(<#T##text: String##String#>)
+                guard let node : SCNNode = loadSceneBasedOnPrediction(latestPrediction) else {return}
                 sceneView.scene.rootNode.addChildNode(node)
                 node.position = worldCoord
             }
         }
 
         
+    }
+    
+    func loadSceneBasedOnPrediction(_ text: String) -> SCNNode? {
+        var urlPath: URL?;
+        
+        guard let urlPath = Bundle.main.url(forResource: text.trimmingCharacters(in: .whitespacesAndNewlines), withExtension: "usdz") else {
+            return nil
+        }
+        let mdlAsset = MDLAsset(url: urlPath)
+        // you can load the textures on an MDAsset so it's not white
+        mdlAsset.loadTextures()
+        let asset = mdlAsset.object(at: 0) // extract first object
+        let assetNode = SCNNode(mdlObject: asset)
+        assetNode.scale = SCNVector3(0.001, 0.001, 0.001)
+        return assetNode
     }
     
     func createNewBubbleParentNode(_ text: String) -> SCNNode {
@@ -192,17 +209,14 @@ class ViewController: UIViewController {
         
         // Get the clasification
         let classifications = observations[0...1] // Get top 2 results
-//            .filter({
-//                $0.confidence >= 0.5
-//            })
-            .flatMap({ $0 as? VNClassificationObservation })
+            .compactMap({ $0 as? VNClassificationObservation })
             .map({ "\($0.identifier) \(String(format: "- %.2f", $0.confidence))" }) // Confidence
             .joined(separator: "\n")
         
         DispatchQueue.main.async {
             // Print the clasification
-            print(classifications)
-            print("---------")
+//            print(classifications)
+//            print("---------")
             
             // Display Debug Text on screen
             var debugText:String = ""
