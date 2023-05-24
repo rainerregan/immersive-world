@@ -14,8 +14,16 @@ import SceneKit.ModelIO
 class ViewController: UIViewController {
 
     /// `sceneView` is an instance of ARSCNView which is a view that displays 3D augmented reality content. `debugText` is an instance of UITextView which is a view that displays text content. The `@IBOutlet` keyword indicates that the variable is an outlet that can be connected to a user interface element in Interface Builder.
+    @IBOutlet weak var resButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var debugText: UITextView!
+    
+    @IBAction func resButtonAction() {
+        print("Reset")
+        guard let sceneView = sceneView else {return}
+        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+        node.removeFromParentNode() }
+    }
     
     /// `ViewControllerDelegate` is a protocol in Swift programming language that defines methods that can be implemented by a delegate of a view controller¹. A delegate is an object that acts on behalf of another object. It is used to handle events or modify the behavior of the view controller². The delegate methods defined in `ViewControllerDelegate` can be used to customize the behavior of a view controller. For example, you can use it to pass data between view controllers³.
     var viewControllerDelegate: ViewControllerDelegate!
