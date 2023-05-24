@@ -17,6 +17,7 @@
 		83EAF1CD2A1E25000077D840 /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1CC2A1E25000077D840 /* MobileNetV2.mlmodel */; };
 		83EAF1CF2A1E26A20077D840 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1CE2A1E26A20077D840 /* Resnet50.mlmodel */; };
 		83EAF1D12A1E2B880077D840 /* MNISTClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1D02A1E2B880077D840 /* MNISTClassifier.mlmodel */; };
+		83EAF1F22A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF1F12A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		83EAF1CC2A1E25000077D840 /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
 		83EAF1CE2A1E26A20077D840 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
 		83EAF1D02A1E2B880077D840 /* MNISTClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MNISTClassifier.mlmodel; sourceTree = "<group>"; };
+		83EAF1F12A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = UpdatableDrawingClassifier.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				83EAF1CC2A1E25000077D840 /* MobileNetV2.mlmodel */,
 				83EAF1CE2A1E26A20077D840 /* Resnet50.mlmodel */,
 				83EAF1D02A1E2B880077D840 /* MNISTClassifier.mlmodel */,
+				83EAF1F12A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel */,
 			);
 			path = WatIsDat;
 			sourceTree = "<group>";
@@ -155,6 +158,7 @@
 				83EAF1CD2A1E25000077D840 /* MobileNetV2.mlmodel in Sources */,
 				83EAF1CB2A1E0C880077D840 /* MobileNet.mlmodel in Sources */,
 				83EAF1D12A1E2B880077D840 /* MNISTClassifier.mlmodel in Sources */,
+				83EAF1F22A1E3E9A0077D840 /* UpdatableDrawingClassifier.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
