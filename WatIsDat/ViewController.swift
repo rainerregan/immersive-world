@@ -10,10 +10,12 @@ import SceneKit
 import ARKit
 import Vision
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController {
 
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var debugText: UITextView!
+    
+    var viewControllerDelegate: ViewControllerDelegate!
     
     let bubbleDepth : Float = 0.01 // the 'depth' of 3D text
     var latestPrediction : String = "THIS IS SPARTA" // a variable containing the latest CoreML prediction
@@ -22,7 +24,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.viewDidLoad()
         
         // Set the view's delegate
-        sceneView.delegate = self
+        viewControllerDelegate = ViewControllerDelegate()
+        sceneView.delegate = viewControllerDelegate
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
@@ -62,10 +65,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // MARK: - Interaction Configuration
     @objc func handleTap(gestureRecognizer : UITapGestureRecognizer) {
         // Get screen center point
-        let screenCenterPoint : CGPoint = CGPoint(
-            x: self.sceneView.bounds.midX,
-            y: self.sceneView.bounds.midY
-        )
+//        let screenCenterPoint : CGPoint = CGPoint(
+//            x: self.sceneView.bounds.midX,
+//            y: self.sceneView.bounds.midY
+//        )
         
         // Create a raycast query using the current frame
         if let raycastQuery: ARRaycastQuery = sceneView.raycastQuery(
@@ -93,21 +96,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func createNewBubbleParentNode(_ text: String) -> SCNNode {
-        // Warning: Creating 3D Text is susceptible to crashing. To reduce chances of crashing; reduce number of polygons, letters, smoothness, etc.
-        
         // TEXT BILLBOARD CONSTRAINT
         let billboardConstraint = SCNBillboardConstraint()
         billboardConstraint.freeAxes = SCNBillboardAxis.Y
         
         // BUBBLE-TEXT
         let bubble = SCNText(string: text, extrusionDepth: CGFloat(bubbleDepth))
-        var font = UIFont(name: "Arial", size: 0.15)
+        let font = UIFont(name: "Arial", size: 0.15)
         bubble.font = font
         bubble.alignmentMode = "center"
         bubble.firstMaterial?.diffuse.contents = UIColor.orange
         bubble.firstMaterial?.specular.contents = UIColor.white
         bubble.firstMaterial?.isDoubleSided = true
-        // bubble.flatness // setting this too low can cause crashes.
         bubble.chamferRadius = CGFloat(bubbleDepth)
         
         // BUBBLE NODE
@@ -132,6 +132,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         return bubbleNodeParent
     }
 
+    
+}
+
+class ViewControllerDelegate: NSObject, ARSCNViewDelegate {
     // MARK: - ARSCNViewDelegate
     
 /*
