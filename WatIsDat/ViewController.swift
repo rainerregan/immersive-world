@@ -130,6 +130,7 @@ class ViewController: UIViewController {
         let asset = mdlAsset.object(at: 0) // extract first object
         let assetNode = SCNNode(mdlObject: asset)
         assetNode.scale = SCNVector3(0.001, 0.001, 0.001)
+        assetNode.eulerAngles = SCNVector3Make(.pi/2, 0, 0);
         
         return assetNode
     }
