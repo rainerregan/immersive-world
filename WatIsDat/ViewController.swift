@@ -18,7 +18,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var debugText: UITextView!
     
-    
     /// The ML model to be used for recognition of arbitrary objects.
     private var _handDrawingModel: HandDrawingModel_v4!
     private var handDrawingModel: HandDrawingModel_v4! {
@@ -44,13 +43,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     }
     
     /// A  variable containing the latest CoreML prediction
-//    var latestPrediction : String = "lorem"
-    // Classification results
     private var identifierString = ""
     private var confidence: VNConfidence = 0.0
     
     // CoreML
-    var visionRequests = [VNRequest]()
+//    var visionRequests = [VNRequest]()
     let dispatchQueueML = DispatchQueue(label: "com.exacode.dispatchqueueml") // A Serial Queue
     
     override func viewDidLoad() {
@@ -82,19 +79,21 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         // MARK: - Vision Model Config
         
         /// It declares a constant variable defaultMLConfig which is an instance of MLModelConfiguration. MLModelConfiguration is a class that provides configuration options for an ML model. The code then loads a Core ML model called HandDrawingModel_New using the VNCoreMLModel class. The VNCoreMLModel class is used to load a Core ML model into a Vision request. The loaded model is assigned to the selectedModel constant variable. If there is an error loading the model, the code will print an error message and terminate the program.
-        let defaultMLConfig = MLModelConfiguration();
-        guard let selectedModel = try? VNCoreMLModel(for: HandDrawingModel_v4(configuration: defaultMLConfig).model) else {
-            fatalError("Error on loading ML Model")
-        }
+//        let defaultMLConfig = MLModelConfiguration();
+//        guard let selectedModel = try? VNCoreMLModel(for: HandDrawingModel_v4(configuration: defaultMLConfig).model) else {
+//            fatalError("Error on loading ML Model")
+//        }
         
         /// It declares a constant variable classificationRequest which is an instance of VNCoreMLRequest. VNCoreMLRequest is a class that performs image analysis using a Core ML model. The selectedModel is passed as a parameter to the VNCoreMLRequest initializer. The completionHandler parameter is set to classificationCompleteHandler, which is a function that will be called when the request completes. The code then sets the imageCropAndScaleOption property of the request to VNImageCropAndScaleOption.centerCrop. This option crops and scales the image to fit the input size required by the model. Finally, the request is added to an array called visionRequests.
-        let classificationRequest = VNCoreMLRequest(model: selectedModel, completionHandler: classificationCompleteHandler)
-        classificationRequest.imageCropAndScaleOption = VNImageCropAndScaleOption.centerCrop // Crop the image
-        visionRequests = [classificationRequest]
+//        let classificationRequest = VNCoreMLRequest(model: selectedModel, completionHandler: classificationCompleteHandler)
+//        classificationRequest.imageCropAndScaleOption = VNImageCropAndScaleOption.centerCrop // Crop the image
+//        visionRequests = [classificationRequest]
+        
+//        visionRequests = [classificationRequest]
         
         /// Loop for updating CoreML
 //        loopCoreMLUpdate()
-        
+        self.restartSession()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -167,20 +166,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     
     // MARK: - CoreML Vision Handling
     
-    /// The loopCoreMLUpdate function is responsible for continuously updating CoreML predictions in a loop. It is designed to be executed on a separate dispatch queue (dispatchQueueML) to prevent blocking the main thread.
-    /// Inside the function, the updateCoreML method is called to perform the CoreML update, which likely involves processing input data and obtaining predictions from a CoreML model.
-    /// After the CoreML update is completed, the function calls itself recursively, effectively creating a loop. This recursive call ensures that the loopCoreMLUpdate function will continue running repeatedly, continuously updating CoreML predictions.
-    /// By executing the function on a separate dispatch queue and recursively calling itself, the loopCoreMLUpdate function provides a way to continuously update and use CoreML predictions in real-time applications or processes.
-//    func loopCoreMLUpdate() {
-//        dispatchQueueML.async {
-//            // Update CoreML
-//            self.updateCoreML()
-//
-//            // Loop this function
-//            self.loopCoreMLUpdate()
-//        }
-//    }
-    
     private lazy var classificationRequest: VNCoreMLRequest = {
         do {
             // Instantiate the model from its generated Swift class.
@@ -210,20 +195,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         
         // Retain the image buffer for Vision processing.
         self.currentBuffer = frame.capturedImage
-        updateCoreML();
+        classifyCurrentImage();
     }
     
-    /// This is a Swift code that uses CoreML and Vision frameworks. It captures the current frame from the camera and converts it into a `CIImage`. Then it prepares a CoreML Vision request using `VNImageRequestHandler` and runs the image request using `perform(_:)` method. The `visionRequests` is an array of `VNCoreMLRequest` objects that are used to process the image. The code is used for classifying images with Vision and Core ML¹.
-    func updateCoreML() {
-        // Get camera image
-//        let pixbuff : CVPixelBuffer? = (sceneView.session.currentFrame?.capturedImage)
-//        if pixbuff == nil {return}
-        let ciImage = CIImage(cvImageBuffer: currentBuffer!)
-        
+    func classifyCurrentImage() {
         // Prepare CoreML Vision Request
         let imageRequestHandler = VNImageRequestHandler(
-            ciImage: ciImage,
-            options: [:]
+            cvPixelBuffer: currentBuffer!
         )
         
         // Run Image Request
@@ -231,26 +209,14 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             do {
                 // Release the pixel buffer when done, allowing the next buffer to be processed.
                 defer { self.currentBuffer = nil }
-                try imageRequestHandler.perform(self.visionRequests)
+                try imageRequestHandler.perform([self.classificationRequest])
             } catch {
                 print(error)
             }
         }
     }
     
-    
-    /// This code is written in Swift programming language. It is a function that takes two parameters: a request and an error. The function first checks if there is an error and prints it if there is one. Then it gets the classification from the request results. It gets the top 2 results and maps them to a string with the identifier and confidence of each classification observation. The string is then joined with a new line separator. The function then updates the debug text on the screen with the classification string. It also stores the latest prediction by getting the object name from the classification string. The object name is obtained by splitting the classification string by "-" and "," characters and getting the first element of the resulting array.
-    /// The code uses VNClassificationObservation which is a type of observation that results from performing a VNCoreMLRequest image analysis with a Core ML model whose role is classification¹.
     func classificationCompleteHandler(request: VNRequest, error: Error?) {
-        /// Catch Errors
-//        if error != nil {
-//            print("Error: " + (error?.localizedDescription)!)
-//            return
-//        }
-//        guard let observations = request.results else {
-//            print("No results")
-//            return
-//        }
         guard let results = request.results else {
             print("Unable to classify image.\n\(error!.localizedDescription)")
             return
@@ -270,75 +236,26 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
         
         DispatchQueue.main.async { [weak self] in
-//            self?.displayClassifierResults()
-        
-            // Print the clasification
-            print(self?.identifierString, self?.confidence)
-            print("---------")
-            
-//            /// Display Debug Text on screen
-//            var debugText:String = ""
-//            debugText += classifications
-//            self.debugText.text = debugText
-//
-//            /// Store the latest prediction
-//            var objectName:String = "default"
-//            objectName = classifications.components(separatedBy: "-")[0]
-//            objectName = objectName.components(separatedBy: ",")[0]
-//            self.latestPrediction = objectName
+            self?.displayClassifiedResult()
         }
-        
-        /// Get the clasification, take the top 2 result of the prediction, and create the string display value
-//        let classifications = observations[0...1] // Get top 2 results
-//            .compactMap({ $0 as? VNClassificationObservation })
-//            .map({ "\($0.identifier) \(String(format: "- %.2f", $0.confidence))" }) // Confidence
-//            .joined(separator: "\n")
-        
-//        DispatchQueue.main.async {
-//            // Print the clasification
-//            print(classifications)
-//            print("---------")
-//
-//            /// Display Debug Text on screen
-//            var debugText:String = ""
-//            debugText += classifications
-//            self.debugText.text = debugText
-//
-//            /// Store the latest prediction
-//            var objectName:String = "default"
-//            objectName = classifications.components(separatedBy: "-")[0]
-//            objectName = objectName.components(separatedBy: ",")[0]
-//            self.latestPrediction = objectName
-//
-//        }
     }
     
+    func displayClassifiedResult() {
+        // Print the clasification
+        print("Clasification: \(self.identifierString)", "Confidence: \(self.confidence)")
+        print("---------")
+        
+        self.debugText.text = "I'm \(self.confidence * 100)% sure this is a/an \(self.identifierString)"
+    }
+    
+    private func restartSession() {
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.horizontal, .vertical]
+        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+    }
     
     // MARK: - ARSCNViewDelegate
 
-    // Override to create and configure nodes for anchors added to the view's session.
-//    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-//        let node = SCNNode()
-//
-//        return node
-//    }
-    
-//    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-//        // Place content only for anchors found by plane detection.
-//        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-//
-//        // Create a custom object to visualize the plane geometry and extent.
-//        guard let meshGeometry = ARSCNPlaneGeometry(device: sceneView.device!)
-//            else { fatalError("Can't create plane geometry") }
-//        meshGeometry.update(from: planeAnchor.geometry)
-//        let meshNode = SCNNode(geometry: meshGeometry)
-//
-//        // Add the visualization to the ARKit-managed node so that it tracks
-//        // changes in the plane anchor as plane estimation continues.
-//        node.addChildNode(meshNode)
-//    }
-
-    
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
         
