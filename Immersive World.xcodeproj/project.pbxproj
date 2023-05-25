@@ -27,6 +27,7 @@
 		83EAF2172A1E8ECA0077D840 /* HandDrawingModel_v3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF2162A1E8ECA0077D840 /* HandDrawingModel_v3.mlmodel */; };
 		83EAF2192A1EDDC70077D840 /* HandDrawingModel_v4.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF2182A1EDDC70077D840 /* HandDrawingModel_v4.mlmodel */; };
 		83EAF2202A1F34210077D840 /* box_outline.png in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF21F2A1F34210077D840 /* box_outline.png */; };
+		83EAF2232A1F4B8C0077D840 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF2222A1F4B8C0077D840 /* Utilities.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		83EAF2162A1E8ECA0077D840 /* HandDrawingModel_v3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = HandDrawingModel_v3.mlmodel; sourceTree = "<group>"; };
 		83EAF2182A1EDDC70077D840 /* HandDrawingModel_v4.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = HandDrawingModel_v4.mlmodel; sourceTree = "<group>"; };
 		83EAF21F2A1F34210077D840 /* box_outline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = box_outline.png; sourceTree = "<group>"; };
+		83EAF2222A1F4B8C0077D840 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 		83EAF1B62A1D33010077D840 /* Immersive World */ = {
 			isa = PBXGroup;
 			children = (
+				83EAF2212A1F4B7D0077D840 /* Support */,
 				83EAF20B2A1E85770077D840 /* bridge.usdz */,
 				83EAF20E2A1E85770077D840 /* bus.usdz */,
 				83EAF20C2A1E85770077D840 /* car.usdz */,
@@ -113,6 +116,14 @@
 				83EAF1F92A1E5D5C0077D840 /* HandDrawingModel_New.mlmodel */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		83EAF2212A1F4B7D0077D840 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				83EAF2222A1F4B8C0077D840 /* Utilities.swift */,
+			);
+			path = Support;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -159,6 +170,8 @@
 				Base,
 			);
 			mainGroup = 83EAF1AB2A1D33010077D840;
+			packageReferences = (
+			);
 			productRefGroup = 83EAF1B52A1D33010077D840 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -199,6 +212,7 @@
 			files = (
 				83EAF1BC2A1D33010077D840 /* ViewController.swift in Sources */,
 				83EAF1B82A1D33010077D840 /* AppDelegate.swift in Sources */,
+				83EAF2232A1F4B8C0077D840 /* Utilities.swift in Sources */,
 				83EAF2192A1EDDC70077D840 /* HandDrawingModel_v4.mlmodel in Sources */,
 				83EAF2072A1E793D0077D840 /* HandDrawingModel_v2.mlmodel in Sources */,
 				83EAF1FA2A1E5D5C0077D840 /* HandDrawingModel_New.mlmodel in Sources */,

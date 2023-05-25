@@ -16,7 +16,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
     /// UIKit Components
     @IBOutlet weak var resButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
-    @IBOutlet weak var debugText: UITextView!
+    @IBOutlet weak var labelText: UILabel!
     
     /// The ML model to be used for recognition of arbitrary objects.
     private var _handDrawingModel: HandDrawingModel_v4!
@@ -77,7 +77,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         
         /// Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal, .vertical]
+        configuration.planeDetection = [.horizontal]
 
         /// Run the view's session
         sceneView.session.run(configuration)
@@ -173,10 +173,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
     }
     
     func classifyCurrentImage() {
+        let orientation = CGImagePropertyOrientation(UIDevice.current.orientation)
         
         let imageRequestHandler = VNImageRequestHandler(
             cvPixelBuffer: currentBuffer!,
-            orientation: .up
+            orientation: orientation
         )
         // I don't know, but .up works the best
         
@@ -221,7 +222,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         print("Clasification: \(self.identifierString)", "Confidence: \(self.confidence)")
         print("---------")
         
-        self.debugText.text = "I'm \(self.confidence * 100)% sure this is a/an \(self.identifierString)"
+        self.labelText.text = "I'm \(self.confidence * 100)% sure this is a/an \(self.identifierString)"
     }
     
     private func restartSession() {
