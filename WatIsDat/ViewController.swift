@@ -11,9 +11,9 @@ import ARKit
 import Vision
 import SceneKit.ModelIO
 
-class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
+class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, ARSKViewDelegate {
 
-    /// `sceneView` is an instance of ARSCNView which is a view that displays 3D augmented reality content. `debugText` is an instance of UITextView which is a view that displays text content. The `@IBOutlet` keyword indicates that the variable is an outlet that can be connected to a user interface element in Interface Builder.
+    /// UIKit Components
     @IBOutlet weak var resButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var debugText: UITextView!
@@ -35,6 +35,12 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
     }
     
+    /// A  variable containing the latest CoreML prediction
+    private var identifierString = ""
+    private var confidence: VNConfidence = 0.0
+    private let dispatchQueueML = DispatchQueue(label: "com.exacode.dispatchqueueml") // A Serial Queue
+    private var currentBuffer : CVImageBuffer?
+    
     @IBAction func resButtonAction() {
         print("Reset")
         guard let sceneView = sceneView else {return}
@@ -42,33 +48,19 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         node.removeFromParentNode() }
     }
     
-    /// A  variable containing the latest CoreML prediction
-    private var identifierString = ""
-    private var confidence: VNConfidence = 0.0
-    
-    // CoreML
-//    var visionRequests = [VNRequest]()
-    let dispatchQueueML = DispatchQueue(label: "com.exacode.dispatchqueueml") // A Serial Queue
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /// Set the view's delegate
-//        viewControllerDelegate = ViewControllerDelegate()
         sceneView.delegate = self
         sceneView.session.delegate = self
-        
-        /// Show statistics such as fps and timing information
         sceneView.showsStatistics = true
+        sceneView.preferredFramesPerSecond = 10
         
         /// Create a new scene
         let scene = SCNScene(named: "art.scnassets/ship.scn")!
-        
-        /// Set the scene to the view
         sceneView.scene = scene
         
         // MARK: - TAP GESTURE RECOGNIZER
-        
         /// Set the tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(
             target: self,
@@ -76,23 +68,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         )
         view.addGestureRecognizer(tapGesture)
         
-        // MARK: - Vision Model Config
-        
-        /// It declares a constant variable defaultMLConfig which is an instance of MLModelConfiguration. MLModelConfiguration is a class that provides configuration options for an ML model. The code then loads a Core ML model called HandDrawingModel_New using the VNCoreMLModel class. The VNCoreMLModel class is used to load a Core ML model into a Vision request. The loaded model is assigned to the selectedModel constant variable. If there is an error loading the model, the code will print an error message and terminate the program.
-//        let defaultMLConfig = MLModelConfiguration();
-//        guard let selectedModel = try? VNCoreMLModel(for: HandDrawingModel_v4(configuration: defaultMLConfig).model) else {
-//            fatalError("Error on loading ML Model")
-//        }
-        
-        /// It declares a constant variable classificationRequest which is an instance of VNCoreMLRequest. VNCoreMLRequest is a class that performs image analysis using a Core ML model. The selectedModel is passed as a parameter to the VNCoreMLRequest initializer. The completionHandler parameter is set to classificationCompleteHandler, which is a function that will be called when the request completes. The code then sets the imageCropAndScaleOption property of the request to VNImageCropAndScaleOption.centerCrop. This option crops and scales the image to fit the input size required by the model. Finally, the request is added to an array called visionRequests.
-//        let classificationRequest = VNCoreMLRequest(model: selectedModel, completionHandler: classificationCompleteHandler)
-//        classificationRequest.imageCropAndScaleOption = VNImageCropAndScaleOption.centerCrop // Crop the image
-//        visionRequests = [classificationRequest]
-        
-//        visionRequests = [classificationRequest]
-        
-        /// Loop for updating CoreML
-//        loopCoreMLUpdate()
+        // MARK: - Start the scanning session
         self.restartSession()
     }
     
@@ -186,8 +162,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
     }()
     
-    var currentBuffer : CVImageBuffer?
-    
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         guard currentBuffer == nil, case .normal = frame.camera.trackingState else {
             return
@@ -199,9 +173,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     }
     
     func classifyCurrentImage() {
-        // Prepare CoreML Vision Request
+        
         let imageRequestHandler = VNImageRequestHandler(
-            cvPixelBuffer: currentBuffer!
+            cvPixelBuffer: currentBuffer!,
+            orientation: .up
         )
         
         // Run Image Request
