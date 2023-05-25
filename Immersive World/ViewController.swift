@@ -77,7 +77,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         
         /// Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal, .vertical]
+        configuration.planeDetection = [.horizontal]
 
         /// Run the view's session
         sceneView.session.run(configuration)
@@ -173,10 +173,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
     }
     
     func classifyCurrentImage() {
+        let orientation = CGImagePropertyOrientation(UIDevice.current.orientation)
         
         let imageRequestHandler = VNImageRequestHandler(
             cvPixelBuffer: currentBuffer!,
-            orientation: .up
+            orientation: orientation
         )
         // I don't know, but .up works the best
         

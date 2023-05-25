@@ -19,35 +19,46 @@
                             <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BrB-h1-WRS">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="818"/>
                             </arscnView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="RAF-WA-s5d">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="RAF-WA-s5d">
                                 <rect key="frame" x="0.0" y="65" width="393" height="73"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="73" id="ftX-B4-Z0C"/>
+                                </constraints>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iNX-OO-7qR">
-                                <rect key="frame" x="162" y="741" width="68" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="box_outline" translatesAutoresizingMaskIntoConstraints="NO" id="Q6N-4r-0PH">
+                                <rect key="frame" x="-52" y="350" width="497" height="395"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="395" id="9ka-OA-lfH"/>
+                                    <constraint firstAttribute="width" constant="497" id="JhE-nP-kOp"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iNX-OO-7qR">
+                                <rect key="frame" x="162" y="710" width="68" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Reset"/>
                                 <connections>
                                     <action selector="resButtonAction" destination="BV1-FR-VrT" eventType="touchUpInside" id="0d9-8D-ftV"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="box_outline" translatesAutoresizingMaskIntoConstraints="NO" id="Q6N-4r-0PH">
-                                <rect key="frame" x="-52" y="350" width="497" height="395"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="fQZ-KI-GVf"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Q6N-4r-0PH" firstAttribute="centerX" secondItem="fQZ-KI-GVf" secondAttribute="centerX" id="FqS-zY-Tmq"/>
                             <constraint firstItem="BrB-h1-WRS" firstAttribute="leading" secondItem="fQZ-KI-GVf" secondAttribute="leading" id="GsS-dJ-CKf"/>
+                            <constraint firstItem="iNX-OO-7qR" firstAttribute="top" secondItem="Q6N-4r-0PH" secondAttribute="bottom" constant="-35" id="Ufb-Rs-xkn"/>
                             <constraint firstItem="BrB-h1-WRS" firstAttribute="bottom" secondItem="fQZ-KI-GVf" secondAttribute="bottom" id="VpT-BR-CcM"/>
                             <constraint firstItem="BrB-h1-WRS" firstAttribute="trailing" secondItem="fQZ-KI-GVf" secondAttribute="trailing" id="XyZ-9z-H8e"/>
+                            <constraint firstItem="iNX-OO-7qR" firstAttribute="centerX" secondItem="fQZ-KI-GVf" secondAttribute="centerX" id="Zt6-Es-WfQ"/>
+                            <constraint firstItem="Q6N-4r-0PH" firstAttribute="centerY" secondItem="fQZ-KI-GVf" secondAttribute="centerY" id="bVZ-LD-GgP"/>
+                            <constraint firstItem="fQZ-KI-GVf" firstAttribute="trailing" secondItem="RAF-WA-s5d" secondAttribute="trailing" id="fde-gF-aDd"/>
+                            <constraint firstItem="RAF-WA-s5d" firstAttribute="top" secondItem="fQZ-KI-GVf" secondAttribute="top" constant="6" id="hPa-QP-LyX"/>
+                            <constraint firstItem="RAF-WA-s5d" firstAttribute="leading" secondItem="fQZ-KI-GVf" secondAttribute="leading" id="jua-DV-kmO"/>
                             <constraint firstItem="BrB-h1-WRS" firstAttribute="top" secondItem="U0K-SW-4ec" secondAttribute="top" id="rJc-2c-zQA"/>
                         </constraints>
                     </view>
@@ -63,7 +74,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="box_outline" width="512" height="512"/>
+        <image name="box_outline" width="170.66667175292969" height="170.66667175292969"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
