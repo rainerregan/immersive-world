@@ -178,6 +178,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
             cvPixelBuffer: currentBuffer!,
             orientation: .up
         )
+        // I don't know, but .up works the best
         
         // Run Image Request
         dispatchQueueML.async {
