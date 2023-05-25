@@ -11,12 +11,30 @@ import ARKit
 import Vision
 import SceneKit.ModelIO
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     /// `sceneView` is an instance of ARSCNView which is a view that displays 3D augmented reality content. `debugText` is an instance of UITextView which is a view that displays text content. The `@IBOutlet` keyword indicates that the variable is an outlet that can be connected to a user interface element in Interface Builder.
     @IBOutlet weak var resButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var debugText: UITextView!
+    
+    
+    /// The ML model to be used for recognition of arbitrary objects.
+    private var _handDrawingModel: HandDrawingModel_v4!
+    private var handDrawingModel: HandDrawingModel_v4! {
+        get {
+            if let model = _handDrawingModel { return model }
+            _handDrawingModel = {
+                do {
+                    let configuration = MLModelConfiguration()
+                    return try HandDrawingModel_v4(configuration: configuration)
+                } catch {
+                    fatalError("Couldn't create HandDrawingModel due to: \(error)")
+                }
+            }()
+            return _handDrawingModel
+        }
+    }
     
     @IBAction func resButtonAction() {
         print("Reset")
@@ -25,11 +43,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         node.removeFromParentNode() }
     }
     
-    /// `ViewControllerDelegate` is a protocol in Swift programming language that defines methods that can be implemented by a delegate of a view controller¹. A delegate is an object that acts on behalf of another object. It is used to handle events or modify the behavior of the view controller². The delegate methods defined in `ViewControllerDelegate` can be used to customize the behavior of a view controller. For example, you can use it to pass data between view controllers³.
-//    var viewControllerDelegate: ViewControllerDelegate!
-    
     /// A  variable containing the latest CoreML prediction
-    var latestPrediction : String = "lorem"
+//    var latestPrediction : String = "lorem"
+    // Classification results
+    private var identifierString = ""
+    private var confidence: VNConfidence = 0.0
     
     // CoreML
     var visionRequests = [VNRequest]()
@@ -41,6 +59,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         /// Set the view's delegate
 //        viewControllerDelegate = ViewControllerDelegate()
         sceneView.delegate = self
+        sceneView.session.delegate = self
         
         /// Show statistics such as fps and timing information
         sceneView.showsStatistics = true
@@ -74,7 +93,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         visionRequests = [classificationRequest]
         
         /// Loop for updating CoreML
-        loopCoreMLUpdate()
+//        loopCoreMLUpdate()
         
     }
     
@@ -119,7 +138,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 let worldCoord : SCNVector3 = SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
                 
                 /// Load 3D Model into the scene as SCNNode and adding into the scene
-                guard let node : SCNNode = loadNodeBasedOnPrediction(latestPrediction) else {return}
+                guard let node : SCNNode = loadNodeBasedOnPrediction(identifierString) else {return}
                 sceneView.scene.rootNode.addChildNode(node)
                 node.position = worldCoord
             }
@@ -152,22 +171,54 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     /// Inside the function, the updateCoreML method is called to perform the CoreML update, which likely involves processing input data and obtaining predictions from a CoreML model.
     /// After the CoreML update is completed, the function calls itself recursively, effectively creating a loop. This recursive call ensures that the loopCoreMLUpdate function will continue running repeatedly, continuously updating CoreML predictions.
     /// By executing the function on a separate dispatch queue and recursively calling itself, the loopCoreMLUpdate function provides a way to continuously update and use CoreML predictions in real-time applications or processes.
-    func loopCoreMLUpdate() {
-        dispatchQueueML.async {
-            // Update CoreML
-            self.updateCoreML()
+//    func loopCoreMLUpdate() {
+//        dispatchQueueML.async {
+//            // Update CoreML
+//            self.updateCoreML()
+//
+//            // Loop this function
+//            self.loopCoreMLUpdate()
+//        }
+//    }
+    
+    private lazy var classificationRequest: VNCoreMLRequest = {
+        do {
+            // Instantiate the model from its generated Swift class.
+            let model = try VNCoreMLModel(for: handDrawingModel.model)
+            let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
+                self?.classificationCompleteHandler(request: request, error: error)
+            })
             
-            // Loop this function
-            self.loopCoreMLUpdate()
+            // Crop input images to square area at center, matching the way the ML model was trained.
+            request.imageCropAndScaleOption = .centerCrop
+            
+            // Use CPU for Vision processing to ensure that there are adequate GPU resources for rendering.
+            request.usesCPUOnly = true
+            
+            return request
+        } catch {
+            fatalError("Failed to load Vision ML model: \(error)")
         }
+    }()
+    
+    var currentBuffer : CVImageBuffer?
+    
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        guard currentBuffer == nil, case .normal = frame.camera.trackingState else {
+            return
+        }
+        
+        // Retain the image buffer for Vision processing.
+        self.currentBuffer = frame.capturedImage
+        updateCoreML();
     }
     
     /// This is a Swift code that uses CoreML and Vision frameworks. It captures the current frame from the camera and converts it into a `CIImage`. Then it prepares a CoreML Vision request using `VNImageRequestHandler` and runs the image request using `perform(_:)` method. The `visionRequests` is an array of `VNCoreMLRequest` objects that are used to process the image. The code is used for classifying images with Vision and Core ML¹.
     func updateCoreML() {
         // Get camera image
-        let pixbuff : CVPixelBuffer? = (sceneView.session.currentFrame?.capturedImage)
-        if pixbuff == nil {return}
-        let ciImage = CIImage(cvImageBuffer: pixbuff!)
+//        let pixbuff : CVPixelBuffer? = (sceneView.session.currentFrame?.capturedImage)
+//        if pixbuff == nil {return}
+        let ciImage = CIImage(cvImageBuffer: currentBuffer!)
         
         // Prepare CoreML Vision Request
         let imageRequestHandler = VNImageRequestHandler(
@@ -176,49 +227,90 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         )
         
         // Run Image Request
-        do {
-            try imageRequestHandler.perform(self.visionRequests)
-        } catch {
-            print(error)
+        dispatchQueueML.async {
+            do {
+                // Release the pixel buffer when done, allowing the next buffer to be processed.
+                defer { self.currentBuffer = nil }
+                try imageRequestHandler.perform(self.visionRequests)
+            } catch {
+                print(error)
+            }
         }
     }
+    
     
     /// This code is written in Swift programming language. It is a function that takes two parameters: a request and an error. The function first checks if there is an error and prints it if there is one. Then it gets the classification from the request results. It gets the top 2 results and maps them to a string with the identifier and confidence of each classification observation. The string is then joined with a new line separator. The function then updates the debug text on the screen with the classification string. It also stores the latest prediction by getting the object name from the classification string. The object name is obtained by splitting the classification string by "-" and "," characters and getting the first element of the resulting array.
     /// The code uses VNClassificationObservation which is a type of observation that results from performing a VNCoreMLRequest image analysis with a Core ML model whose role is classification¹.
     func classificationCompleteHandler(request: VNRequest, error: Error?) {
         /// Catch Errors
-        if error != nil {
-            print("Error: " + (error?.localizedDescription)!)
+//        if error != nil {
+//            print("Error: " + (error?.localizedDescription)!)
+//            return
+//        }
+//        guard let observations = request.results else {
+//            print("No results")
+//            return
+//        }
+        guard let results = request.results else {
+            print("Unable to classify image.\n\(error!.localizedDescription)")
             return
         }
-        guard let observations = request.results else {
-            print("No results")
-            return
+        
+        // The `results` will always be `VNClassificationObservation`s, as specified by the Core ML model in this project.
+        let classifications = results as! [VNClassificationObservation]
+        
+        // Show a label for the highest-confidence result (but only above a minimum confidence threshold).
+        if let bestResult = classifications.first(where: { result in result.confidence > 0.5 }),
+            let label = bestResult.identifier.split(separator: ",").first {
+            identifierString = String(label)
+            confidence = bestResult.confidence
+        } else {
+            identifierString = ""
+            confidence = 0
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+//            self?.displayClassifierResults()
+        
+            // Print the clasification
+            print(self?.identifierString, self?.confidence)
+            print("---------")
+            
+//            /// Display Debug Text on screen
+//            var debugText:String = ""
+//            debugText += classifications
+//            self.debugText.text = debugText
+//
+//            /// Store the latest prediction
+//            var objectName:String = "default"
+//            objectName = classifications.components(separatedBy: "-")[0]
+//            objectName = objectName.components(separatedBy: ",")[0]
+//            self.latestPrediction = objectName
         }
         
         /// Get the clasification, take the top 2 result of the prediction, and create the string display value
-        let classifications = observations[0...1] // Get top 2 results
-            .compactMap({ $0 as? VNClassificationObservation })
-            .map({ "\($0.identifier) \(String(format: "- %.2f", $0.confidence))" }) // Confidence
-            .joined(separator: "\n")
+//        let classifications = observations[0...1] // Get top 2 results
+//            .compactMap({ $0 as? VNClassificationObservation })
+//            .map({ "\($0.identifier) \(String(format: "- %.2f", $0.confidence))" }) // Confidence
+//            .joined(separator: "\n")
         
-        DispatchQueue.main.async {
-            // Print the clasification
+//        DispatchQueue.main.async {
+//            // Print the clasification
 //            print(classifications)
 //            print("---------")
-            
-            /// Display Debug Text on screen
-            var debugText:String = ""
-            debugText += classifications
-            self.debugText.text = debugText
-            
-            /// Store the latest prediction
-            var objectName:String = "default"
-            objectName = classifications.components(separatedBy: "-")[0]
-            objectName = objectName.components(separatedBy: ",")[0]
-            self.latestPrediction = objectName
-            
-        }
+//
+//            /// Display Debug Text on screen
+//            var debugText:String = ""
+//            debugText += classifications
+//            self.debugText.text = debugText
+//
+//            /// Store the latest prediction
+//            var objectName:String = "default"
+//            objectName = classifications.components(separatedBy: "-")[0]
+//            objectName = objectName.components(separatedBy: ",")[0]
+//            self.latestPrediction = objectName
+//
+//        }
     }
     
     
