@@ -17,7 +17,7 @@
 		83EAF2002A1E5EB90077D840 /* eiffel.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF1FE2A1E5EB90077D840 /* eiffel.usdz */; };
 		83EAF2042A1E64FF0077D840 /* tree.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF2032A1E64FF0077D840 /* tree.usdz */; };
 		83EAF2072A1E793D0077D840 /* HandDrawingModel_v2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF2062A1E793D0077D840 /* HandDrawingModel_v2.mlmodel */; };
-		83EAF20F2A1E85770077D840 /* skyscraper1.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF2082A1E85770077D840 /* skyscraper1.usdz */; };
+		83EAF20F2A1E85770077D840 /* skyscraper.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF2082A1E85770077D840 /* skyscraper.usdz */; };
 		83EAF2102A1E85770077D840 /* skyscraper2.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF2092A1E85770077D840 /* skyscraper2.usdz */; };
 		83EAF2112A1E85770077D840 /* traffic_light.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF20A2A1E85770077D840 /* traffic_light.usdz */; };
 		83EAF2122A1E85770077D840 /* bridge.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF20B2A1E85770077D840 /* bridge.usdz */; };
@@ -25,6 +25,7 @@
 		83EAF2142A1E85770077D840 /* skyscraper3.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF20D2A1E85770077D840 /* skyscraper3.usdz */; };
 		83EAF2152A1E85770077D840 /* bus.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 83EAF20E2A1E85770077D840 /* bus.usdz */; };
 		83EAF2172A1E8ECA0077D840 /* HandDrawingModel_v3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF2162A1E8ECA0077D840 /* HandDrawingModel_v3.mlmodel */; };
+		83EAF2192A1EDDC70077D840 /* HandDrawingModel_v4.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 83EAF2182A1EDDC70077D840 /* HandDrawingModel_v4.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,7 +40,7 @@
 		83EAF1FE2A1E5EB90077D840 /* eiffel.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = eiffel.usdz; sourceTree = "<group>"; };
 		83EAF2032A1E64FF0077D840 /* tree.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = tree.usdz; sourceTree = "<group>"; };
 		83EAF2062A1E793D0077D840 /* HandDrawingModel_v2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = HandDrawingModel_v2.mlmodel; sourceTree = "<group>"; };
-		83EAF2082A1E85770077D840 /* skyscraper1.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = skyscraper1.usdz; sourceTree = "<group>"; };
+		83EAF2082A1E85770077D840 /* skyscraper.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = skyscraper.usdz; sourceTree = "<group>"; };
 		83EAF2092A1E85770077D840 /* skyscraper2.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = skyscraper2.usdz; sourceTree = "<group>"; };
 		83EAF20A2A1E85770077D840 /* traffic_light.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = traffic_light.usdz; sourceTree = "<group>"; };
 		83EAF20B2A1E85770077D840 /* bridge.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = bridge.usdz; sourceTree = "<group>"; };
@@ -47,6 +48,7 @@
 		83EAF20D2A1E85770077D840 /* skyscraper3.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = skyscraper3.usdz; sourceTree = "<group>"; };
 		83EAF20E2A1E85770077D840 /* bus.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = bus.usdz; sourceTree = "<group>"; };
 		83EAF2162A1E8ECA0077D840 /* HandDrawingModel_v3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = HandDrawingModel_v3.mlmodel; sourceTree = "<group>"; };
+		83EAF2182A1EDDC70077D840 /* HandDrawingModel_v4.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = HandDrawingModel_v4.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,7 +84,7 @@
 				83EAF20B2A1E85770077D840 /* bridge.usdz */,
 				83EAF20E2A1E85770077D840 /* bus.usdz */,
 				83EAF20C2A1E85770077D840 /* car.usdz */,
-				83EAF2082A1E85770077D840 /* skyscraper1.usdz */,
+				83EAF2082A1E85770077D840 /* skyscraper.usdz */,
 				83EAF2092A1E85770077D840 /* skyscraper2.usdz */,
 				83EAF20D2A1E85770077D840 /* skyscraper3.usdz */,
 				83EAF20A2A1E85770077D840 /* traffic_light.usdz */,
@@ -102,6 +104,7 @@
 		83EAF1FB2A1E5DAC0077D840 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				83EAF2182A1EDDC70077D840 /* HandDrawingModel_v4.mlmodel */,
 				83EAF2162A1E8ECA0077D840 /* HandDrawingModel_v3.mlmodel */,
 				83EAF2062A1E793D0077D840 /* HandDrawingModel_v2.mlmodel */,
 				83EAF1F92A1E5D5C0077D840 /* HandDrawingModel_New.mlmodel */,
@@ -174,7 +177,7 @@
 				83EAF1C12A1D33020077D840 /* Assets.xcassets in Resources */,
 				83EAF2102A1E85770077D840 /* skyscraper2.usdz in Resources */,
 				83EAF2142A1E85770077D840 /* skyscraper3.usdz in Resources */,
-				83EAF20F2A1E85770077D840 /* skyscraper1.usdz in Resources */,
+				83EAF20F2A1E85770077D840 /* skyscraper.usdz in Resources */,
 				83EAF2152A1E85770077D840 /* bus.usdz in Resources */,
 				83EAF1BF2A1D33010077D840 /* Main.storyboard in Resources */,
 				83EAF2122A1E85770077D840 /* bridge.usdz in Resources */,
@@ -192,6 +195,7 @@
 			files = (
 				83EAF1BC2A1D33010077D840 /* ViewController.swift in Sources */,
 				83EAF1B82A1D33010077D840 /* AppDelegate.swift in Sources */,
+				83EAF2192A1EDDC70077D840 /* HandDrawingModel_v4.mlmodel in Sources */,
 				83EAF2072A1E793D0077D840 /* HandDrawingModel_v2.mlmodel in Sources */,
 				83EAF1FA2A1E5D5C0077D840 /* HandDrawingModel_New.mlmodel in Sources */,
 				83EAF2172A1E8ECA0077D840 /* HandDrawingModel_v3.mlmodel in Sources */,

@@ -11,7 +11,7 @@ import ARKit
 import Vision
 import SceneKit.ModelIO
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, ARSCNViewDelegate {
 
     /// `sceneView` is an instance of ARSCNView which is a view that displays 3D augmented reality content. `debugText` is an instance of UITextView which is a view that displays text content. The `@IBOutlet` keyword indicates that the variable is an outlet that can be connected to a user interface element in Interface Builder.
     @IBOutlet weak var resButton: UIButton!
@@ -26,21 +26,21 @@ class ViewController: UIViewController {
     }
     
     /// `ViewControllerDelegate` is a protocol in Swift programming language that defines methods that can be implemented by a delegate of a view controller¹. A delegate is an object that acts on behalf of another object. It is used to handle events or modify the behavior of the view controller². The delegate methods defined in `ViewControllerDelegate` can be used to customize the behavior of a view controller. For example, you can use it to pass data between view controllers³.
-    var viewControllerDelegate: ViewControllerDelegate!
+//    var viewControllerDelegate: ViewControllerDelegate!
     
     /// A  variable containing the latest CoreML prediction
     var latestPrediction : String = "lorem"
     
     // CoreML
     var visionRequests = [VNRequest]()
-    let dispatchQueueML = DispatchQueue(label: "com.hw.dispatchqueueml") // A Serial Queue
+    let dispatchQueueML = DispatchQueue(label: "com.exacode.dispatchqueueml") // A Serial Queue
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         /// Set the view's delegate
-        viewControllerDelegate = ViewControllerDelegate()
-        sceneView.delegate = viewControllerDelegate
+//        viewControllerDelegate = ViewControllerDelegate()
+        sceneView.delegate = self
         
         /// Show statistics such as fps and timing information
         sceneView.showsStatistics = true
@@ -64,7 +64,7 @@ class ViewController: UIViewController {
         
         /// It declares a constant variable defaultMLConfig which is an instance of MLModelConfiguration. MLModelConfiguration is a class that provides configuration options for an ML model. The code then loads a Core ML model called HandDrawingModel_New using the VNCoreMLModel class. The VNCoreMLModel class is used to load a Core ML model into a Vision request. The loaded model is assigned to the selectedModel constant variable. If there is an error loading the model, the code will print an error message and terminate the program.
         let defaultMLConfig = MLModelConfiguration();
-        guard let selectedModel = try? VNCoreMLModel(for: HandDrawingModel_v3(configuration: defaultMLConfig).model) else {
+        guard let selectedModel = try? VNCoreMLModel(for: HandDrawingModel_v4(configuration: defaultMLConfig).model) else {
             fatalError("Error on loading ML Model")
         }
         
@@ -83,6 +83,7 @@ class ViewController: UIViewController {
         
         /// Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.horizontal, .vertical]
 
         /// Run the view's session
         sceneView.session.run(configuration)
@@ -104,10 +105,12 @@ class ViewController: UIViewController {
         if let raycastQuery: ARRaycastQuery = sceneView.raycastQuery(
             from: gestureRecognizer.location(in: self.sceneView),
             allowing: .estimatedPlane,
-            alignment: .any
+            alignment: .horizontal
         ) {
             // Performing raycast from the clicked location
             let raycastResults: [ARRaycastResult] = sceneView.session.raycast(raycastQuery)
+            
+            print(raycastResults.debugDescription)
             
             // Based on the raycast result, get the closest intersecting point on the plane
             if let closestResult = raycastResults.first {
@@ -138,7 +141,7 @@ class ViewController: UIViewController {
         let asset = mdlAsset.object(at: 0) // extract first object
         let assetNode = SCNNode(mdlObject: asset)
         assetNode.scale = SCNVector3(0.001, 0.001, 0.001)
-        assetNode.eulerAngles = SCNVector3Make(.pi/2, 0, 0);
+//        assetNode.eulerAngles = SCNVector3Make(.pi/2, 0, 0);
         
         return assetNode
     }
@@ -217,20 +220,32 @@ class ViewController: UIViewController {
             
         }
     }
-}
-
-// MARK: - ARSCNViewDelegate
-
-class ViewControllerDelegate: NSObject, ARSCNViewDelegate {
     
-/*
+    
+    // MARK: - ARSCNViewDelegate
+
     // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
-    }
-*/
+//    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+//        let node = SCNNode()
+//
+//        return node
+//    }
+    
+//    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+//        // Place content only for anchors found by plane detection.
+//        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+//
+//        // Create a custom object to visualize the plane geometry and extent.
+//        guard let meshGeometry = ARSCNPlaneGeometry(device: sceneView.device!)
+//            else { fatalError("Can't create plane geometry") }
+//        meshGeometry.update(from: planeAnchor.geometry)
+//        let meshNode = SCNNode(geometry: meshGeometry)
+//
+//        // Add the visualization to the ARKit-managed node so that it tracks
+//        // changes in the plane anchor as plane estimation continues.
+//        node.addChildNode(meshNode)
+//    }
+
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
