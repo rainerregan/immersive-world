@@ -54,7 +54,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         sceneView.delegate = self
         sceneView.session.delegate = self
         sceneView.showsStatistics = true
-        sceneView.preferredFramesPerSecond = 10
+//        sceneView.preferredFramesPerSecond = 10
         
         /// Create a new scene
         let scene = SCNScene(named: "art.scnassets/ship.scn")!
@@ -178,6 +178,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
             cvPixelBuffer: currentBuffer!,
             orientation: .up
         )
+        // I don't know, but .up works the best
         
         // Run Image Request
         dispatchQueueML.async {
