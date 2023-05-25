@@ -26,11 +26,11 @@
                                     <constraint firstAttribute="width" constant="40" id="JhE-nP-kOp"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cm8-Ch-Sjq">
-                                <rect key="frame" x="16" y="75" width="361" height="40"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cm8-Ch-Sjq">
+                                <rect key="frame" x="16" y="75" width="361" height="80"/>
                                 <color key="backgroundColor" systemColor="systemGroupedBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="A74-MK-JnB"/>
+                                    <constraint firstAttribute="height" constant="80" id="A74-MK-JnB"/>
                                 </constraints>
                                 <attributedString key="attributedText">
                                     <fragment content="Draw an object and scan it within the crosshair">
@@ -43,9 +43,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iNX-OO-7qR">
-                                <rect key="frame" x="16" y="751" width="361" height="35"/>
+                                <rect key="frame" x="16" y="738" width="361" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="361" id="6j9-u9-zEt"/>
+                                    <constraint firstAttribute="height" constant="48" id="Lhq-Gd-KeC"/>
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Reset"/>
