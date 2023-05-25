@@ -16,7 +16,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
     /// UIKit Components
     @IBOutlet weak var resButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
-    @IBOutlet weak var debugText: UITextView!
+    @IBOutlet weak var labelText: UILabel!
     
     /// The ML model to be used for recognition of arbitrary objects.
     private var _handDrawingModel: HandDrawingModel_v4!
@@ -222,7 +222,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         print("Clasification: \(self.identifierString)", "Confidence: \(self.confidence)")
         print("---------")
         
-        self.debugText.text = "I'm \(self.confidence * 100)% sure this is a/an \(self.identifierString)"
+        self.labelText.text = "I'm \(self.confidence * 100)% sure this is a/an \(self.identifierString)"
     }
     
     private func restartSession() {
