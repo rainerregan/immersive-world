@@ -11,13 +11,20 @@ import ARKit
 import Vision
 import SceneKit.ModelIO
 
-class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, ARSKViewDelegate, ARCoachingOverlayViewDelegate {
+class ViewController: UIViewController {
 
     /// UIKit Components
     @IBOutlet weak var resButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var labelText: UILabel!
     
+    /// A  variable containing the latest CoreML prediction
+    private var identifierString = ""
+    private var confidence: VNConfidence = 0.0
+    private let dispatchQueueML = DispatchQueue(label: "com.exacode.dispatchqueueml") // A Serial Queue
+    private var currentBuffer : CVImageBuffer?
+    
+    /// Coaching Overlay
     var coachingOverlay: ARCoachingOverlayView!
     
     /// The ML model to be used for recognition of arbitrary objects.
@@ -37,12 +44,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         }
     }
     
-    /// A  variable containing the latest CoreML prediction
-    private var identifierString = ""
-    private var confidence: VNConfidence = 0.0
-    private let dispatchQueueML = DispatchQueue(label: "com.exacode.dispatchqueueml") // A Serial Queue
-    private var currentBuffer : CVImageBuffer?
-    
     @IBAction func resButtonAction() {
         print("Reset")
         guard let sceneView = sceneView else {return}
@@ -56,13 +57,14 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         sceneView.delegate = self
         sceneView.session.delegate = self
         sceneView.showsStatistics = true
-//        sceneView.preferredFramesPerSecond = 10
+        
+        // Lock the device orientation to the desired orientation
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         
         /// Create a new scene
         let scene = SCNScene(named: "art.scnassets/ship.scn")!
         sceneView.scene = scene
         
-        // MARK: - TAP GESTURE RECOGNIZER
         /// Set the tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(
             target: self,
@@ -70,9 +72,19 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         )
         view.addGestureRecognizer(tapGesture)
         
-        // MARK: - Start the scanning session
+        // Start the scanning session
         self.restartSession()
         
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        // Specify the supported orientations (in this case, only portrait)
+        return .portrait
+    }
+    
+    override var shouldAutorotate: Bool {
+        // Disable autorotation
+        return false
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -94,7 +106,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
     }
     
     // MARK: - Interaction Configuration
-    
     /// The handleTap function is responsible for handling tap gestures on the AR scene view. It performs a raycast query to determine the intersection point between the tap location and any estimated planes in the scene. If an intersection is found, a 3D model is loaded based on a prediction and placed at the intersection point in the scene. This function enables users to place 3D models by tapping on the AR scene.
     @objc func handleTap(gestureRecognizer : UITapGestureRecognizer) {
         
@@ -125,6 +136,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         
     }
     
+    // MARK: - Scene manipulation
     /// The loadNodeBasedOnPrediction function loads a 3D model node based on a provided text prediction. It expects the text to be a valid filename for a USDZ file. The function first constructs a URL path using the provided text, trims whitespace and newline characters, and appends the "usdz" file extension. If the URL path cannot be created, indicating a missing file, the function returns nil.
     /// If the URL path is valid, an MDLAsset is created using the URL path. Textures associated with the model are loaded, and the first object from the asset is extracted. A new SCNNode is created using the extracted object, and its scale is set to 0.001 in all dimensions.
     /// Finally, the function returns the created SCNNode representing the loaded 3D model, or nil if any step fails.
@@ -144,7 +156,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
     }
     
     // MARK: - CoreML Vision Handling
-    
     private lazy var classificationRequest: VNCoreMLRequest = {
         do {
             // Instantiate the model from its generated Swift class.
@@ -165,16 +176,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         }
     }()
     
-    func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        guard currentBuffer == nil, case .normal = frame.camera.trackingState else {
-            return
-        }
-        
-        // Retain the image buffer for Vision processing.
-        self.currentBuffer = frame.capturedImage
-        classifyCurrentImage();
-    }
-    
     func classifyCurrentImage() {
         let orientation = CGImagePropertyOrientation(UIDevice.current.orientation)
         
@@ -182,7 +183,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
             cvPixelBuffer: currentBuffer!,
             orientation: orientation
         )
-        // I don't know, but .up works the best
         
         // Run Image Request
         dispatchQueueML.async {
@@ -228,6 +228,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         self.labelText.text = "I'm \(self.confidence * 100)% sure this is a/an \(self.identifierString)"
     }
     
+    // MARK: - Restart Session and Rerun AR
     private func restartSession() {
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal, .vertical]
@@ -239,15 +240,17 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         coachingOverlay.delegate = self
         coachingOverlay.activatesAutomatically = true
         coachingOverlay.goal = .horizontalPlane
-        sceneView.addSubview(coachingOverlay)
         coachingOverlay.setActive(true, animated: true)
         
+        sceneView.addSubview(coachingOverlay)
 
         // Make sure coaching overlay is on top
         sceneView.bringSubviewToFront(coachingOverlay)
     }
-    
-    // MARK: - ARSCNViewDelegate
+}
+
+// MARK: - ARSCNViewDelegate
+extension ViewController : ARSCNViewDelegate {
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         // Check if the detected anchor is of ARPlaneAnchor type
         guard let planeAnchor = anchor as? ARPlaneAnchor else {
@@ -256,9 +259,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
 
         // Plane detected, you can perform additional actions here
         print("Plane detected: \(planeAnchor)")
-
-        // Disable coaching overlay
-//        coachingOverlay.setActive(false, animated: true)
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
@@ -270,27 +270,40 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         // Plane updated, you can perform additional actions here
         print("Plane updated: \(planeAnchor)")
     }
+}
 
-
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
+// MARK: - ARSessionDelegate
+extension ViewController: ARSessionDelegate {
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        guard currentBuffer == nil, case .normal = frame.camera.trackingState else {
+            return
+        }
         
+        // Retain the image buffer for Vision processing.
+        self.currentBuffer = frame.capturedImage
+        classifyCurrentImage();
     }
     
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
-    }
-    
-    func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        // Check if the camera is blocked
+        if camera.trackingState == .limited(.insufficientFeatures) {
+            // Activate coaching overlay if the camera is blocked
+            coachingOverlay.setActive(true, animated: true)
+        } else {
+            // Deactivate coaching overlay if the camera is not blocked
+            coachingOverlay.setActive(false, animated: true)
+        }
     }
 }
 
-extension ViewController {
+// MARK: - ARCoachingOverlayViewDelegate
+extension ViewController : ARCoachingOverlayViewDelegate{
     func coachingOverlayViewDidRequestSessionReset(_ coachingOverlayView: ARCoachingOverlayView) {
         // Plane detected, disable coaching overlay
         coachingOverlay.setActive(false, animated: true)
+    }
+    
+    func coachingOverlayViewWillActivate(_ coachingOverlayView: ARCoachingOverlayView) {
+        labelText.text = "Point your camera to your hand drawing"
     }
 }
