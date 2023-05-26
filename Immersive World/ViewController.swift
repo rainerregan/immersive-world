@@ -11,12 +11,14 @@ import ARKit
 import Vision
 import SceneKit.ModelIO
 
-class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, ARSKViewDelegate {
+class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, ARSKViewDelegate, ARCoachingOverlayViewDelegate {
 
     /// UIKit Components
     @IBOutlet weak var resButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var labelText: UILabel!
+    
+    var coachingOverlay: ARCoachingOverlayView!
     
     /// The ML model to be used for recognition of arbitrary objects.
     private var _handDrawingModel: HandDrawingModel_v4!
@@ -70,6 +72,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         
         // MARK: - Start the scanning session
         self.restartSession()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -229,9 +232,45 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal, .vertical]
         sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        
+        // Set up ARCoachingOverlayView
+        coachingOverlay = ARCoachingOverlayView(frame: sceneView.bounds)
+        coachingOverlay.session = sceneView.session
+        coachingOverlay.delegate = self
+        coachingOverlay.activatesAutomatically = true
+        coachingOverlay.goal = .horizontalPlane
+        sceneView.addSubview(coachingOverlay)
+        coachingOverlay.setActive(true, animated: true)
+        
+
+        // Make sure coaching overlay is on top
+        sceneView.bringSubviewToFront(coachingOverlay)
     }
     
     // MARK: - ARSCNViewDelegate
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        // Check if the detected anchor is of ARPlaneAnchor type
+        guard let planeAnchor = anchor as? ARPlaneAnchor else {
+            return
+        }
+
+        // Plane detected, you can perform additional actions here
+        print("Plane detected: \(planeAnchor)")
+
+        // Disable coaching overlay
+//        coachingOverlay.setActive(false, animated: true)
+    }
+
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        // Check if the updated anchor is of ARPlaneAnchor type
+        guard let planeAnchor = anchor as? ARPlaneAnchor else {
+            return
+        }
+
+        // Plane updated, you can perform additional actions here
+        print("Plane updated: \(planeAnchor)")
+    }
+
 
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
@@ -246,5 +285,12 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AR
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
+    }
+}
+
+extension ViewController {
+    func coachingOverlayViewDidRequestSessionReset(_ coachingOverlayView: ARCoachingOverlayView) {
+        // Plane detected, disable coaching overlay
+        coachingOverlay.setActive(false, animated: true)
     }
 }
